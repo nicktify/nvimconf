@@ -1,6 +1,7 @@
 local install_path = vim.fn.stdpath 'data' .. '/site/pack/packer/start/packer.nvim'
 local is_bootstrap = false
 
+
 if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
   is_bootstrap = true
   vim.fn.execute('!git clone https://github.com/wbthomason/packer.nvim ' .. install_path)
@@ -148,8 +149,9 @@ vim.api.nvim_create_autocmd('BufWritePost', {
 
 -- Set highlight on search
 vim.o.hlsearch = false
-vim.o.cursorline = true
-vim.o.scrolloff = 999
+
+vim.o.cursorline = false
+vim.o.scrolloff = 3
 vim.o.wrap = false
 vim.wo.number = true
 vim.o.clipboard = 'unnamedplus'
@@ -211,6 +213,9 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
+-- Go to definition open on new tab
+vim.keymap.set("n", "gn", "<cmd>tab split | lua vim.lsp.buf.definition()<CR>", {})
+
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
@@ -260,23 +265,33 @@ require('gitsigns').setup {
 
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
-require('telescope').setup {
+require('telescope').setup({
   defaults = {
-    mappings = {
-      i = {
-        ['<C-u>'] = false,
-        ['<C-d>'] = false,
-      },
+    layout_strategy = 'vertical',
+    sorting_strategy = "descending",
+    layout_config = {
+      height = 0.9,
+      width = 0.9,
     },
   },
-}
+})
 
 -- Enable telescope fzf native, if installed
 pcall(require('telescope').load_extension, 'fzf')
 
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
-vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
+vim.keymap.set('n', '<leader><space>', function()
+  require('telescope.builtin').buffers(require('telescope.themes').get_dropdown {
+    winblend = 10,
+    previewer = false,
+    layout_config = {
+      height = 0.9,
+      width = 0.5,
+    },
+  })
+end, { desc = '[ ] Find existing buffers' })
+
 vim.keymap.set('n', '<leader>/', function()
   -- You can pass additional configuration to telescope to change theme, layout, etc.
   require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
@@ -285,34 +300,41 @@ vim.keymap.set('n', '<leader>/', function()
   })
 end, { desc = '[/] Fuzzily search in current buffer]' })
 
--- File Browser with telescope, dont includes dot files
--- vim.keymap.set('n', '<leader>fb', function()
---   require('telescope').extensions.file_browser.file_browser({
---     path_display = { shorten = 1 },
---     cwd = vim.fn.expand('%:p:h')
---   })
--- end, { desc = '[F]ile [B]rowser', noremap = true })
-
--- File Browser with telescope, includes dot files, and .env files
 vim.keymap.set('n', '<leader>fb', function()
-  require('telescope').extensions.file_browser.file_browser({
-    path_display = { shorten = 1 },
+  require('telescope').extensions.file_browser.file_browser(require('telescope.themes').get_dropdown {
+    winblend = 10,
+    previewer = false,
+    layout_config = {
+      height = 0.9,
+      width = 0.5,
+    },
+    no_ignore = true,
     hidden = true,
-    cwd = vim.fn.expand('%:p:h'),
-    git_files = false,
   })
 end, { desc = '[F]ile [B]rowser', noremap = true })
 
-vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
-vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
-vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
-vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
-vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
-vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
+vim.keymap.set('n', '<leader>sf', function()
+  require('telescope.builtin').find_files(require('telescope.themes').get_dropdown {
+    previewer = false,
+    layout_config = {
+      height = 0.9,
+      width = 0.9,
+    },
+  })
+end, { desc = '[S]earch [F]iles' })
 
--- toggle nvim tree with n
--- vim.keymap.set('n', '<leader>o', ':NvimTreeFindFile<CR>', {noremap = true, silent = true})
--- vim.keymap.set('n', '<leader>p', ':NvimTreeToggle<CR>', {noremap = true, silent = true})
+vim.keymap.set('n', '<leader>sw', function()
+  require('telescope.builtin').grep_string(require('telescope.themes').get_dropdown {
+    previewer = false,
+    layout_config = {
+      height = 0.9,
+      width = 0.9,
+    },
+  })
+end, { desc = '[S]earch current [W]ord' })
+
+-- vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
+-- vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 
 -- [[ Configure Treesitter ]]
 
@@ -401,30 +423,6 @@ end
 local runtime_path = vim.split(package.path, ';')
 table.insert(runtime_path, 'lua/?.lua')
 table.insert(runtime_path, 'lua/?/init.lua')
-
--- require('lspconfig').sumneko_lua.setup {
---   on_attach = on_attach,
---   capabilities = capabilities,
---   settings = {
---     Lua = {
---       runtime = {
---         -- Tell the language server which version of Lua you're using (most likely LuaJIT)
---         version = 'LuaJIT',
---         -- Setup your lua path
---         path = runtime_path,
---       },
---       diagnostics = {
---         globals = { 'vim' },
---       },
---       workspace = {
---         library = vim.api.nvim_get_runtime_file('', true),
---         checkThirdParty = false,
---       },
---       -- Do not send telemetry data containing a randomized but unique identifier
---       telemetry = { enable = false },
---     },
---   },
--- }
 
 -- nvim-cmp setup
 local cmp = require 'cmp'
@@ -593,6 +591,7 @@ require('mason').setup()
 require('go').setup()
 
 local format_sync_grp = vim.api.nvim_create_augroup("GoFormat", {})
+
 vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = "*.go",
   callback = function()
