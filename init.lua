@@ -1,6 +1,6 @@
+
 local install_path = vim.fn.stdpath 'data' .. '/site/pack/packer/start/packer.nvim'
 local is_bootstrap = false
-
 
 if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
   is_bootstrap = true
@@ -20,10 +20,10 @@ require('packer').startup(function(use)
     'hrsh7th/nvim-cmp',
     requires = { 'hrsh7th/cmp-nvim-lsp', 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip' },
   }
-  use {
-    'f-person/git-blame.nvim',
-  }
-  use 'tribela/vim-transparent'
+  -- use {
+  --   'f-person/git-blame.nvim',
+  -- }
+  -- use 'tribela/vim-transparent'
   use {'akinsho/bufferline.nvim', tag = "v3.*", requires = 'nvim-tree/nvim-web-devicons'}
   use ({ 'projekt0n/github-nvim-theme', tag = 'v0.0.7' })
   use { -- Highlight, edit, and navigate code
@@ -42,12 +42,18 @@ require('packer').startup(function(use)
   use 'tpope/vim-fugitive'
   use 'tpope/vim-rhubarb'
   use 'lewis6991/gitsigns.nvim'
-  use { "catppuccin/nvim", as = "catppuccin" } -- Theme
   use 'nvim-lualine/lualine.nvim' -- Fancier statusline
   use 'numToStr/Comment.nvim' -- "gc" to comment visual regions/lines
   use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
   -- Fuzzy Finder (files, lsp, etc)
-  use { 'nvim-telescope/telescope.nvim', branch = '0.1.x', requires = { 'nvim-lua/plenary.nvim' } }
+  use {
+    'nvim-telescope/telescope.nvim',
+    branch = '0.1.x',
+    requires = {
+      'nvim-lua/plenary.nvim',
+      "nvim-telescope/telescope-live-grep-args.nvim",
+    },
+  }
   -- Fuzzy Finder Algorithm which requires local dependencies to be built. Only load if `make` is available
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make', cond = vim.fn.executable 'make' == 1 }
   use {
@@ -86,13 +92,6 @@ require('packer').startup(function(use)
   use 'ray-x/go.nvim'
   use 'ray-x/guihua.lua'
 
-  -- use({
-  --   "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
-  --   config = function()
-  --     require("lsp_lines").setup()
-  --   end,
-  -- })
-
   use {
     "cuducos/yaml.nvim",
     ft = { "yaml" }, -- optional
@@ -102,15 +101,8 @@ require('packer').startup(function(use)
     },
   }
 
-  -- install without yarn or npm
-  use({
-      "iamcco/markdown-preview.nvim",
-      run = function() vim.fn["mkdp#util#install"]() end,
-  })
-
-  use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", setup = function() vim.g.mkdp_filetypes = { "markdown" } end, ft = { "markdown" }, })
-
   use("github/copilot.vim")
+  use("echasnovski/mini.files")
 
   -- Add custom plugins to packer from /nvim/lua/custom/plugins.lua
   local has_plugins, plugins = pcall(require, 'custom.plugins')
@@ -164,8 +156,8 @@ vim.opt.encoding = 'utf-8'
 vim.opt.fileencoding = 'utf-8'
 
 -- set tab space to stop at 2
-vim.o.tabstop = 2
-vim.o.shiftwidth = 2
+-- vim.o.tabstop = 2
+-- vim.o.shiftwidth = 2
 
 -- Enable break indent
 vim.o.breakindent = true
@@ -216,6 +208,7 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 -- Go to definition open on new tab
 vim.keymap.set("n", "gn", "<cmd>tab split | lua vim.lsp.buf.definition()<CR>", {})
 
+
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
@@ -230,21 +223,27 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- Set lualine as statusline
 -- See `:help lualine.txt`
 vim.g.gitblame_display_virtual_text = 0
-local git_blame = require('gitblame')
 
+-- local git_blame = require('gitblame')
 -- git_blame.disable()
 
 require('lualine').setup {
   options = {
     icons_enabled = true,
-    theme = 'catppuccin',
+    theme = 'auto',
+    -- theme = 'catppuccin',
     component_separators = '|',
     section_separators = '',
+    -- show current opened buffer
   },
   sections = {
     lualine_c = {
-      { git_blame.get_current_blame_text, cond = git_blame.is_blame_text_available }
-    }
+      { 'filename', path = 1 },
+    },
+    lualine_x = {
+      { 'filetype', colored = true },
+    },
+    lualine_y = {},
   }
 }
 
@@ -264,6 +263,7 @@ require('gitsigns').setup {
 }
 
 -- [[ Configure Telescope ]]
+-- -- this is a test of a recording
 -- See `:help telescope` and `:help telescope.setup()`
 require('telescope').setup({
   defaults = {
@@ -271,6 +271,7 @@ require('telescope').setup({
     sorting_strategy = "descending",
     layout_config = {
       height = 0.9,
+      -- this is a test of a recording
       width = 0.9,
     },
   },
@@ -278,12 +279,15 @@ require('telescope').setup({
 
 -- Enable telescope fzf native, if installed
 pcall(require('telescope').load_extension, 'fzf')
+-- this is a test of a recording
+pcall(require('telescope').load_extension, 'live_grep_args')
 
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
 vim.keymap.set('n', '<leader><space>', function()
   require('telescope.builtin').buffers(require('telescope.themes').get_dropdown {
     winblend = 10,
+    -- this is a test of a recording
     previewer = false,
     layout_config = {
       height = 0.9,
@@ -291,6 +295,7 @@ vim.keymap.set('n', '<leader><space>', function()
     },
   })
 end, { desc = '[ ] Find existing buffers' })
+-- this is a test of a recording
 
 vim.keymap.set('n', '<leader>/', function()
   -- You can pass additional configuration to telescope to change theme, layout, etc.
@@ -298,45 +303,135 @@ vim.keymap.set('n', '<leader>/', function()
     winblend = 10,
     previewer = false,
   })
+  -- this is a test of a recording
 end, { desc = '[/] Fuzzily search in current buffer]' })
 
-vim.keymap.set('n', '<leader>fb', function()
-  require('telescope').extensions.file_browser.file_browser(require('telescope.themes').get_dropdown {
+vim.keymap.set('n', '<leader>sg', function()
+  vim.cmd('tabnew')
+  require('telescope.builtin').live_grep(require('telescope.themes').get_dropdown {
     winblend = 10,
     previewer = false,
+    -- this is a test of a recording
+    prompt_prefix = '🔍 ',
+    prompt_titl = 'Live Grep:',
     layout_config = {
       height = 0.9,
-      width = 0.5,
+      width = 0.9,
     },
-    no_ignore = true,
-    hidden = true,
+    keep_open_on_exit = true,
+    -- this is a test of a recording
   })
+end, { desc = '[F]ind [G]rep' })
+
+vim.keymap.set('n', '<leader>fb', function()
+  require('telescope').extensions.file_browser.file_browser(
+    require('telescope.themes').get_dropdown {
+      winblend = 10,
+      -- this is a test of a recording
+      previewer = true,
+      layout_config = {
+        height = 0.9,
+        width = 0.9,
+      },
+      -- no_ignore = true,
+      -- hidden = true,
+      -- -- this is a test of a recording
+      -- open current dir
+      cwd = vim.fn.expand('%:p:h'),
+      -- show folders firts
+      grouped = true,
+      files = true,
+      add_dirs = true,
+      -- depth = 2,
+      -- -- this is a test of a recording
+      hide_parent_dir = true,
+      dir_icon = '',
+      dir_icon_hl = 'Directory',
+      prompt_path = true,
+    }
+  )
 end, { desc = '[F]ile [B]rowser', noremap = true })
+-- this is a test of a recording
+
+-- Open mini files
+vim.keymap.set('n', 'ff', function()
+  require('mini.files').open()
+end, { desc = '[F]ind [F]iles' })
 
 vim.keymap.set('n', '<leader>sf', function()
+  -- this is a test of a recording
   require('telescope.builtin').find_files(require('telescope.themes').get_dropdown {
     previewer = false,
     layout_config = {
       height = 0.9,
       width = 0.9,
     },
+    no_ignore = true,
+    -- this is a test of a recording
+    hidden = true,
+    find_command = {
+      "rg",
+      "-uu",
+      "--files",
+      "--hidden",
+      "-g",
+      -- this is a test of a recording
+      "!.git/",
+      "-g",
+      "!node_modules",
+      "-g",
+      "!tmp/",
+      "-g",
+      "!build/",
+      -- this is a test of a recording
+      "-g",
+      "!dist/",
+    },
+    -- find_command = { 'rg', '--files', '--hidden', '--glob', '!.git', '--glob', '!node_modules' },
   })
 end, { desc = '[S]earch [F]iles' })
 
+-- this is a test of a recording
 vim.keymap.set('n', '<leader>sw', function()
   require('telescope.builtin').grep_string(require('telescope.themes').get_dropdown {
-    previewer = false,
+    previewer = true,
     layout_config = {
-      height = 0.9,
+      height = 0.4,
       width = 0.9,
     },
+    -- this is a test of a recording
+    find_command = {
+      "rg",
+      "-uu",
+      "--files",
+      "--hidden",
+      "-g",
+      "!.git/",
+      -- this is a test of a recording
+      "-g",
+      "!node_modules",
+      "-g",
+      "!tmp/",
+      "-g",
+      "!build/",
+      "-g",
+      -- this is a test of a recording
+      "!dist/",
+    },
+    -- find_command = { 'rg', '--files', '--hidden', '--glob', '!.git', '--glob', '!node_modules' },
   })
 end, { desc = '[S]earch current [W]ord' })
 
 -- vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
+-- -- this is a test of a recording
 -- vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
+-- open nvim-tree
+vim.keymap.set('n', '<leader>nt', function()
+  require('nvim-tree').toggle()
+end, { desc = '[N]vim [T]ree' })
 
 -- [[ Configure Treesitter ]]
+-- -- this is a test of a recording
 
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
@@ -344,6 +439,7 @@ require('nvim-treesitter.configs').setup {
   highlight = { enable = true },
   indent = { enable = true },
 }
+-- this is a test of a recording
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
@@ -351,6 +447,7 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
 
+-- this is a test of a recording
 -- LSP settings.
 --  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(_, bufnr)
@@ -358,6 +455,7 @@ local on_attach = function(_, bufnr)
   -- to define small helper and utility functions so you don't have to repeat yourself
   -- many times.
   --
+  ---- this is a test of a recording
   -- In this case, we create a function that lets us more easily define mappings specific
   -- for LSP related items. It sets the mode, buffer and description for us each time.
   local nmap = function(keys, func, desc)
@@ -365,6 +463,7 @@ local on_attach = function(_, bufnr)
       desc = 'LSP: ' .. desc
     end
 
+    -- this is a test of a recording
     vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
   end
 
@@ -372,6 +471,7 @@ local on_attach = function(_, bufnr)
   nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
   nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
+  -- this is a test of a recording
   nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
   nmap('gI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
   nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
@@ -379,6 +479,7 @@ local on_attach = function(_, bufnr)
   nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
   -- See `:help K` for why this keymap
+  -- -- this is a test of a recording
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
   nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
@@ -386,6 +487,7 @@ local on_attach = function(_, bufnr)
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
   nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
   nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
+  -- this is a test of a recording
   nmap('<leader>wl', function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, '[W]orkspace [L]ist Folders')
@@ -393,6 +495,7 @@ local on_attach = function(_, bufnr)
   -- Create a command `:Format` local to the LSP buffer
   vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
     if vim.lsp.buf.format then
+      -- this is a test of a recording
       vim.lsp.buf.format()
     elseif vim.lsp.buf.formatting then
       vim.lsp.buf.formatting()
@@ -400,6 +503,7 @@ local on_attach = function(_, bufnr)
   end, { desc = 'Format current buffer with LSP' })
 end
 
+-- this is a test of a recording
 -- Setup mason so it can manage external tooling
 
 -- Enable the following language servers
@@ -407,6 +511,7 @@ end
 local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver', 'gopls' }
 
 -- nvim-cmp supports additional completion capabilities
+-- -- this is a test of a recording
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
@@ -414,6 +519,7 @@ for _, lsp in ipairs(servers) do
   require('lspconfig')[lsp].setup {
     on_attach = on_attach,
     capabilities = capabilities,
+    -- this is a test of a recording
   }
 end
 
@@ -421,6 +527,7 @@ end
 --
 -- Make runtime files discoverable to the server
 local runtime_path = vim.split(package.path, ';')
+-- this is a test of a recording
 table.insert(runtime_path, 'lua/?.lua')
 table.insert(runtime_path, 'lua/?/init.lua')
 
@@ -428,6 +535,7 @@ table.insert(runtime_path, 'lua/?/init.lua')
 local cmp = require 'cmp'
 local luasnip = require 'luasnip'
 
+-- this is a test of a recording
 cmp.setup {
   snippet = {
     expand = function(args)
@@ -435,6 +543,7 @@ cmp.setup {
     end,
   },
   mapping = cmp.mapping.preset.insert {
+    -- this is a test of a recording
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete(),
@@ -442,6 +551,7 @@ cmp.setup {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     },
+    -- this is a test of a recording
     ['<Tab>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
@@ -449,6 +559,7 @@ cmp.setup {
         luasnip.expand_or_jump()
       else
         fallback()
+        -- this is a test of a recording
       end
     end, { 'i', 's' }),
     ['<S-Tab>'] = cmp.mapping(function(fallback)
@@ -456,6 +567,7 @@ cmp.setup {
         cmp.select_prev_item()
       elseif luasnip.jumpable(-1) then
         luasnip.jump(-1)
+        -- this is a test of a recording
       else
         fallback()
       end
@@ -463,6 +575,7 @@ cmp.setup {
   },
   sources = {
     { name = 'nvim_lsp' },
+    -- this is a test of a recording
     { name = 'luasnip' },
   },
 }
@@ -470,6 +583,7 @@ cmp.setup {
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 
+-- this is a test of a recording
 -- nvim tree setup
 -- disable netrw at the very start of your init.lua (strongly advised)
 vim.g.loaded_netrw = 1
@@ -477,6 +591,7 @@ vim.g.loaded_netrwPlugin = 1
 
 -- set termguicolors to enable highlight groups
 vim.opt.termguicolors = true
+-- this is a test of a recording
 
 -- empty setup using defaults
 -- OR setup with some options
@@ -484,6 +599,7 @@ require("nvim-tree").setup({
   sort_by = "case_sensitive",
   view = {
     adaptive_size = true,
+    -- this is a test of a recording
     mappings = {
       list = {
         { key = "u", action = "dir_up" },
@@ -491,6 +607,7 @@ require("nvim-tree").setup({
     },
   },
   renderer = {
+    -- this is a test of a recording
     group_empty = true,
   },
   filters = {
@@ -498,6 +615,7 @@ require("nvim-tree").setup({
     custom = { '^.git$' }
   },
   actions = {
+    -- this is a test of a recording
     open_file = {
       quit_on_open = false
     }
@@ -505,6 +623,7 @@ require("nvim-tree").setup({
   git = {
     enable = true,
     ignore = false,
+    -- this is a test of a recording
   }
 })
 
@@ -512,6 +631,7 @@ require("bufferline").setup {
   options = {
     show_buffer_default_icon = false,
     offsets = {
+      -- this is a test of a recording
       {
         filetype = "NvimTree",
         text = "NvimTree Explorer",
@@ -519,6 +639,7 @@ require("bufferline").setup {
         separator = true
       }
     },
+    -- this is a test of a recording
     separator_style = {"", ""},
     mode = "tabs", -- set to "tabs" to only show tabpages instead
     always_show_bufferline = false,
@@ -526,6 +647,7 @@ require("bufferline").setup {
     color_icons = false,
     show_close_icon = false,
     show_tab_indicators = false,
+    -- this is a test of a recording
     indicator = {
       -- icon = '▎', -- this should be omitted if indicator style is not 'icon'
       style = 'none',
@@ -533,6 +655,7 @@ require("bufferline").setup {
   }
 }
 
+-- this is a test of a recording
 
 require("catppuccin").setup({
     flavour = "mocha", -- latte, frappe, macchiato, mocha
@@ -540,13 +663,15 @@ require("catppuccin").setup({
         light = "latte",
         dark = "mocha",
     },
-    transparent_background = false, -- disables setting the background color.
+  -- this is a test of a recording
+    transparent_background = true, -- disables setting the background color.
     show_end_of_buffer = false, -- shows the '~' characters after the end of buffers
     term_colors = false, -- sets terminal colors (e.g. `g:terminal_color_0`)
     dim_inactive = {
         enabled = false, -- dims the background color of inactive window
         shade = "dark",
         percentage = 0.15, -- percentage of the shade to apply to the inactive window
+    -- this is a test of a recording
     },
     no_italic = false, -- Force no italic
     no_bold = false, -- Force no bold
@@ -554,6 +679,7 @@ require("catppuccin").setup({
     styles = { -- Handles the styles of general hi groups (see `:h highlight-args`):
         comments = { "italic" }, -- Change the style of comments
         conditionals = { "italic" },
+    -- this is a test of a recording
         loops = {},
         functions = {},
         keywords = {},
@@ -561,6 +687,7 @@ require("catppuccin").setup({
         variables = {},
         numbers = {},
         booleans = {},
+    -- this is a test of a recording
         properties = {},
         types = {},
         operators = {},
@@ -568,6 +695,7 @@ require("catppuccin").setup({
     color_overrides = {
       mocha = {
         base = "#000000",
+      -- this is a test of a recording
         mantle = "#000000",
         crust = "#000000",
       },
@@ -575,6 +703,7 @@ require("catppuccin").setup({
     custom_highlights = {},
     integrations = {
         cmp = true,
+    -- this is a test of a recording
         gitsigns = true,
         nvimtree = true,
         treesitter = true,
@@ -582,6 +711,7 @@ require("catppuccin").setup({
         mini = {
             enabled = true,
             indentscope_color = "",
+      -- this is a test of a recording
         },
         -- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
     },
@@ -589,6 +719,7 @@ require("catppuccin").setup({
 
 require('mason').setup()
 require('go').setup()
+-- this is a test of a recording
 
 local format_sync_grp = vim.api.nvim_create_augroup("GoFormat", {})
 
@@ -599,4 +730,4 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end,
   group = format_sync_grp,
 })
-
+require('mini.files').setup()
