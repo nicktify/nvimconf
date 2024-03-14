@@ -256,10 +256,19 @@ require('gitsigns').setup {
   signs = {
     add = { text = '+' },
     change = { text = '~' },
-    delete = { text = '_' },
+    -- delete = { text = '_' },
+    delete = { text = "" },
     topdelete = { text = '‾' },
     changedelete = { text = '~' },
   },
+  -- signs = {
+  --   add = { text = "▎" },
+  --   change = { text = "▎" },
+  --   delete = { text = "" },
+  --   topdelete = { text = '‾' },
+  --   changedelete = { text = "▎" },
+  --   untracked = { text = "▎" },
+  -- },
 }
 
 -- [[ Configure Telescope ]]
