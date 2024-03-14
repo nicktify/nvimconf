@@ -142,7 +142,7 @@ vim.api.nvim_create_autocmd('BufWritePost', {
 -- Set highlight on search
 vim.o.hlsearch = false
 
-vim.o.cursorline = false
+vim.o.cursorline = true
 vim.o.scrolloff = 3
 vim.o.wrap = false
 vim.wo.number = true
@@ -174,7 +174,7 @@ vim.o.smartcase = false
 
 -- Decrease update time
 vim.o.updatetime = 250
-vim.wo.signcolumn = 'no'
+vim.wo.signcolumn = 'yes'
 
 -- Set colorscheme
 vim.o.termguicolors = true
