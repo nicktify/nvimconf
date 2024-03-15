@@ -11,7 +11,15 @@ end
 require('packer').startup(function(use)
   -- Package manager
   use 'wbthomason/packer.nvim'
-  use 'neovim/nvim-lspconfig'
+  use {'neovim/nvim-lspconfig',
+    requires = {
+      'williamboman/mason.nvim',
+      'williamboman/mason-lspconfig.nvim',
+      'WhoIsSethDaniel/mason-tool-installer.nvim',
+      -- { 'j-hui/fidget.nvim', opts = {} },
+      -- { 'folke/neodev.nvim', opts = {} },
+    },
+  }
   use {
     "williamboman/mason.nvim"
   }
@@ -109,7 +117,6 @@ require('packer').startup(function(use)
   use 'leoluz/nvim-dap-go'
   use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
   use 'mxsdev/nvim-dap-vscode-js'
-
   -- use 'sebdah/vim-delve'
 
   -- Add custom plugins to packer from /nvim/lua/custom/plugins.lua
@@ -284,7 +291,6 @@ require('telescope').setup({
 -- Enable telescope fzf native, if installed
 pcall(require('telescope').load_extension, 'fzf')
 -- this is a test of a recording
-pcall(require('telescope').load_extension, 'live_grep_args')
 
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
@@ -304,26 +310,22 @@ end, { desc = '[ ] Find existing buffers' })
 vim.keymap.set('n', '<leader>/', function()
   -- You can pass additional configuration to telescope to change theme, layout, etc.
   require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-    winblend = 10,
+    -- winblend = 10,
     previewer = false,
   })
   -- this is a test of a recording
 end, { desc = '[/] Fuzzily search in current buffer]' })
 
 vim.keymap.set('n', '<leader>sg', function()
-  vim.cmd('tabnew')
   require('telescope.builtin').live_grep(require('telescope.themes').get_dropdown {
     winblend = 10,
     previewer = false,
-    -- this is a test of a recording
     prompt_prefix = '🔍 ',
     prompt_titl = 'Live Grep:',
     layout_config = {
       height = 0.9,
       width = 0.9,
     },
-    keep_open_on_exit = true,
-    -- this is a test of a recording
   })
 end, { desc = '[F]ind [G]rep' })
 
@@ -355,12 +357,12 @@ vim.keymap.set('n', '<leader>fb', function()
     }
   )
 end, { desc = '[F]ile [B]rowser', noremap = true })
--- this is a test of a recording
 
 -- Open mini files
 vim.keymap.set('n', 'ff', function()
   require('mini.files').open()
 end, { desc = '[F]ind [F]iles' })
+
 
 vim.keymap.set('n', '<leader>sf', function()
   -- this is a test of a recording
@@ -371,7 +373,6 @@ vim.keymap.set('n', '<leader>sf', function()
       width = 0.9,
     },
     no_ignore = true,
-    -- this is a test of a recording
     hidden = true,
     find_command = {
       "rg",
@@ -379,7 +380,6 @@ vim.keymap.set('n', '<leader>sf', function()
       "--files",
       "--hidden",
       "-g",
-      -- this is a test of a recording
       "!.git/",
       "-g",
       "!node_modules",
@@ -387,15 +387,12 @@ vim.keymap.set('n', '<leader>sf', function()
       "!tmp/",
       "-g",
       "!build/",
-      -- this is a test of a recording
       "-g",
       "!dist/",
     },
-    -- find_command = { 'rg', '--files', '--hidden', '--glob', '!.git', '--glob', '!node_modules' },
   })
 end, { desc = '[S]earch [F]iles' })
 
--- this is a test of a recording
 vim.keymap.set('n', '<leader>sw', function()
   require('telescope.builtin').grep_string(require('telescope.themes').get_dropdown {
     previewer = true,
@@ -403,7 +400,6 @@ vim.keymap.set('n', '<leader>sw', function()
       height = 0.4,
       width = 0.9,
     },
-    -- this is a test of a recording
     find_command = {
       "rg",
       "-uu",
@@ -411,7 +407,6 @@ vim.keymap.set('n', '<leader>sw', function()
       "--hidden",
       "-g",
       "!.git/",
-      -- this is a test of a recording
       "-g",
       "!node_modules",
       "-g",
@@ -419,31 +414,21 @@ vim.keymap.set('n', '<leader>sw', function()
       "-g",
       "!build/",
       "-g",
-      -- this is a test of a recording
       "!dist/",
     },
-    -- find_command = { 'rg', '--files', '--hidden', '--glob', '!.git', '--glob', '!node_modules' },
   })
 end, { desc = '[S]earch current [W]ord' })
 
--- vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
--- -- this is a test of a recording
--- vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
--- open nvim-tree
-vim.keymap.set('n', '<leader>nt', function()
-  require('nvim-tree').toggle()
-end, { desc = '[N]vim [T]ree' })
+vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
+vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 
 -- [[ Configure Treesitter ]]
--- -- this is a test of a recording
-
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
   ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'typescript', 'help', 'javascript' },
   highlight = { enable = true },
   indent = { enable = true },
 }
--- this is a test of a recording
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
@@ -451,7 +436,6 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
 
--- this is a test of a recording
 -- LSP settings.
 --  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(_, bufnr)
@@ -459,7 +443,6 @@ local on_attach = function(_, bufnr)
   -- to define small helper and utility functions so you don't have to repeat yourself
   -- many times.
   --
-  ---- this is a test of a recording
   -- In this case, we create a function that lets us more easily define mappings specific
   -- for LSP related items. It sets the mode, buffer and description for us each time.
   local nmap = function(keys, func, desc)
@@ -467,7 +450,6 @@ local on_attach = function(_, bufnr)
       desc = 'LSP: ' .. desc
     end
 
-    -- this is a test of a recording
     vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
   end
 
@@ -483,7 +465,6 @@ local on_attach = function(_, bufnr)
   nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
   -- See `:help K` for why this keymap
-  -- -- this is a test of a recording
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
   nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
 
@@ -491,7 +472,6 @@ local on_attach = function(_, bufnr)
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
   nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
   nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
-  -- this is a test of a recording
   nmap('<leader>wl', function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
   end, '[W]orkspace [L]ist Folders')
@@ -760,3 +740,95 @@ vim.keymap.set('n', '<F11>', require 'dap'.step_into)
 vim.keymap.set('n', '<F12>', require 'dap'.step_out)
 vim.keymap.set('n', '<leader>b', require 'dap'.toggle_breakpoint)
 
+
+-- set tab for golang, javascript and typescript as 2 spaces
+vim.api.nvim_exec([[
+augroup GoFmt
+  autocmd!
+  autocmd FileType go,typescript,javascript setlocal tabstop=2 shiftwidth=2
+augroup END
+]], false)
+
+-- set tab for python as 4 spaces
+vim.api.nvim_exec([[
+augroup TSCFmt
+  autocmd!
+  autocmd FileType python setlocal tabstop=4 shiftwidth=4
+augroup END
+]], false)
+
+
+
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
+  callback = function(event)
+    -- NOTE: Remember that lua is a real programming language, and as such it is possible
+    -- to define small helper and utility functions so you don't have to repeat yourself
+    -- many times.
+    --
+    -- In this case, we create a function that lets us more easily define mappings specific
+    -- for LSP related items. It sets the mode, buffer and description for us each time.
+    local map = function(keys, func, desc)
+      vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
+    end
+
+    -- Jump to the definition of the word under your cursor.
+    --  This is where a variable was first declared, or where a function is defined, etc.
+    --  To jump back, press <C-t>.
+    map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
+
+    -- Find references for the word under your cursor.
+    map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+
+    -- Jump to the implementation of the word under your cursor.
+    --  Useful when your language has ways of declaring types without an actual implementation.
+    map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
+
+    -- Jump to the type of the word under your cursor.
+    --  Useful when you're not sure what type a variable is and you want to see
+    --  the definition of its *type*, not where it was *defined*.
+    map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
+
+    -- Fuzzy find all the symbols in your current document.
+    --  Symbols are things like variables, functions, types, etc.
+    map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+
+    -- Fuzzy find all the symbols in your current workspace
+    --  Similar to document symbols, except searches over your whole project.
+    map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+
+    -- Rename the variable under your cursor
+    --  Most Language Servers support renaming across files, etc.
+    map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+
+    -- Execute a code action, usually your cursor needs to be on top of an error
+    -- or a suggestion from your LSP for this to activate.
+    map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
+
+    -- Opens a popup that displays documentation about the word under your cursor
+    --  See `:help K` for why this keymap
+    map('K', vim.lsp.buf.hover, 'Hover Documentation')
+
+    -- WARN: This is not Goto Definition, this is Goto Declaration.
+    --  For example, in C this would take you to the header
+    map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+
+    -- The following two autocommands are used to highlight references of the
+    -- word under your cursor when your cursor rests there for a little while.
+    --    See `:help CursorHold` for information about when this is executed
+    --
+    -- When you move your cursor, the highlights will be cleared (the second autocommand).
+    local client = vim.lsp.get_client_by_id(event.data.client_id)
+    if client and client.server_capabilities.documentHighlightProvider then
+      vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+        buffer = event.buf,
+        callback = vim.lsp.buf.document_highlight,
+      })
+
+      vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
+        buffer = event.buf,
+        callback = vim.lsp.buf.clear_references,
+      })
+    end
+  end,
+})
