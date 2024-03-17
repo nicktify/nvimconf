@@ -8,7 +8,6 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   group = format_sync_grp,
 })
 
-require('mini.files').setup()
 -- set tab for golang, javascript and typescript as 2 spaces
 vim.api.nvim_exec([[
 augroup TSFmt

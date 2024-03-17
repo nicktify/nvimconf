@@ -161,3 +161,4 @@ vim.keymap.set('n', '<leader>b', require 'dap'.toggle_breakpoint)
 -- configure junp 10 lines up and down
 vim.api.nvim_set_keymap('n', 'K', '10k', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', 'J', '10j', { noremap = true, silent = true })
+
