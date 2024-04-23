@@ -15,4 +15,3 @@ require('Comment').setup()
 require('go').setup()
 require('mason').setup()
 require('mini.files').setup()
-

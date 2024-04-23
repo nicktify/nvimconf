@@ -25,7 +25,7 @@ require('packer').startup(function(use)
   -- use {
   --   'f-person/git-blame.nvim',
   -- }
-  -- use 'tribela/vim-transparent'
+  use 'tribela/vim-transparent'
   use {'akinsho/bufferline.nvim', tag = "v3.*", requires = 'nvim-tree/nvim-web-devicons'}
   use ({ 'projekt0n/github-nvim-theme', tag = 'v0.0.7' })
   use { -- Highlight, edit, and navigate code
@@ -45,7 +45,6 @@ require('packer').startup(function(use)
   use 'tpope/vim-rhubarb'
   use 'lewis6991/gitsigns.nvim'
   use 'nvim-lualine/lualine.nvim' -- Fancier statusline
-  use 'numToStr/Comment.nvim' -- "gc" to comment visual regions/lines
   use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
   -- Fuzzy Finder (files, lsp, etc)
   use {
@@ -75,6 +74,7 @@ require('packer').startup(function(use)
     requires = "nvim-lua/plenary.nvim",
     config = function()
       require("todo-comments").setup {
+        pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
         -- your configuration comes here
         -- or leave it empty to use the default settings
         -- refer to the configuration section below
@@ -103,7 +103,7 @@ require('packer').startup(function(use)
     },
   }
 
-  use("github/copilot.vim")
+  -- use("github/copilot.vim")
   use("echasnovski/mini.files")
 
   use 'mfussenegger/nvim-dap'
@@ -114,7 +114,23 @@ require('packer').startup(function(use)
 
   -- beautiful colorschemes
   use "rose-pine/neovim"
-  -- use { "catppuccin/nvim", as = "catppuccin" }
+  use { "catppuccin/nvim", as = "catppuccin" }
+
+  -- require('Comment').setup()
+
+  use {
+      'numToStr/Comment.nvim',
+      config = function()
+          require('Comment').setup()
+      end
+  }
+  -- When updating to NeoVim 10.0, use the following
+  -- use({
+  --   'Bekaboo/dropbar.nvim',
+  --   requires = {
+  --     'nvim-telescope/telescope-fzf-native.nvim'
+  --   }
+  -- })
 
   -- Add custom plugins to packer from /nvim/lua/custom/plugins.lua
 --   local has_plugins, plugins = pcall(require, 'custom.plugins')
@@ -126,7 +142,7 @@ require('packer').startup(function(use)
 --     require('packer').sync()
 --   end
 end)
---
+
 -- Automatically source and re-compile packer whenever you save this init.lua
 -- local packer_group = vim.api.nvim_create_augroup('Packer', { clear = true })
 -- vim.api.nvim_create_autocmd('BufWritePost', {

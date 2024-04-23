@@ -9,8 +9,8 @@ vim.g.maplocalleader = ' '
 vim.api.nvim_set_keymap('n', '<leader>fp', [[:%!autopep8 -<CR>]], { noremap = true, silent = true })
 
 -- copilot
-vim.g.copilot_no_tab_map = true
-vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
+-- vim.g.copilot_no_tab_map = true
+-- vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
@@ -40,16 +40,21 @@ vim.keymap.set('n', '<leader>/', function()
   -- You can pass additional configuration to telescope to change theme, layout, etc.
   require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
     -- winblend = 10,
-    previewer = false,
+    -- previewer = false,
+    layout_config = {
+      height = 0.4,
+      width = 0.6,
+    },
   })
 end, { desc = '[/] Fuzzily search in current buffer]' })
 
+-- vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch [G]rep' })
 vim.keymap.set('n', '<leader>sg', function()
   require('telescope.builtin').live_grep(require('telescope.themes').get_dropdown {
-    winblend = 10,
+    -- winblend = 10,
     previewer = false,
-    prompt_prefix = '🔍 ',
-    prompt_titl = 'Live Grep:',
+    -- prompt_prefix = '🔍 ',
+    -- prompt_titl = 'Live Grep:',
     layout_config = {
       height = 0.9,
       width = 0.9,
@@ -58,9 +63,9 @@ vim.keymap.set('n', '<leader>sg', function()
 end, { desc = '[F]ind [G]rep' })
 
 vim.keymap.set('n', '<leader>fb', function()
-  require('telescope').extensions.file_browser.file_browser(
-    require('telescope.themes').get_dropdown {
-      winblend = 10,
+  require('telescope').extensions.file_browser.file_browser(require('telescope.themes').get_dropdown {
+      -- winblend = 10,
+      -- transparent = true,
       previewer = true,
       layout_config = {
         height = 0.9,
@@ -149,8 +154,8 @@ vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { de
 -- Diagnostic keymaps
 -- vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
 -- vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
--- vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
--- vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
 
 vim.keymap.set('n', '<F5>', require 'dap'.continue)
 vim.keymap.set('n', '<F10>', require 'dap'.step_over)
@@ -159,6 +164,6 @@ vim.keymap.set('n', '<F12>', require 'dap'.step_out)
 vim.keymap.set('n', '<leader>b', require 'dap'.toggle_breakpoint)
 
 -- configure junp 10 lines up and down
-vim.api.nvim_set_keymap('n', 'K', '10k', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', 'J', '10j', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', 'K', '5k', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', 'J', '5j', { noremap = true, silent = true })
 
