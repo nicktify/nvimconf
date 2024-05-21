@@ -27,8 +27,8 @@ vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc =
 
 vim.keymap.set('n', '<leader><space>', function()
   require('telescope.builtin').buffers(require('telescope.themes').get_dropdown {
-    winblend = 10,
-    previewer = false,
+    -- winblend = 10,
+    -- previewer = false,
     layout_config = {
       height = 0.9,
       width = 0.5,
@@ -52,7 +52,7 @@ end, { desc = '[/] Fuzzily search in current buffer]' })
 vim.keymap.set('n', '<leader>sg', function()
   require('telescope.builtin').live_grep(require('telescope.themes').get_dropdown {
     -- winblend = 10,
-    previewer = false,
+    -- previewer = false,
     -- prompt_prefix = '🔍 ',
     -- prompt_titl = 'Live Grep:',
     layout_config = {
@@ -61,6 +61,9 @@ vim.keymap.set('n', '<leader>sg', function()
     },
   })
 end, { desc = '[F]ind [G]rep' })
+
+-- resume function
+vim.keymap.set('n', '<leader>re', require('telescope.builtin').resume, { desc = '[S]earch [G]rep' })
 
 vim.keymap.set('n', '<leader>fb', function()
   require('telescope').extensions.file_browser.file_browser(require('telescope.themes').get_dropdown {
@@ -157,13 +160,30 @@ vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { de
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
 
-vim.keymap.set('n', '<F5>', require 'dap'.continue)
-vim.keymap.set('n', '<F10>', require 'dap'.step_over)
-vim.keymap.set('n', '<F11>', require 'dap'.step_into)
-vim.keymap.set('n', '<F12>', require 'dap'.step_out)
-vim.keymap.set('n', '<leader>b', require 'dap'.toggle_breakpoint)
-
 -- configure junp 10 lines up and down
 vim.api.nvim_set_keymap('n', 'K', '5k', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', 'J', '5j', { noremap = true, silent = true })
+
+
+vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+
+-- move yank text into black hole when deliting (don't copy to clipboard)
+-- vim.keymap.set("n", "d", '"_d')
+-- vim.keymap.set("n", "x", "d")
+-- vim.keymap.set("v", "d", '"_d')
+-- vim.keymap.set("v", "x", "d")
+
+-- copy from  https://github.com/craftzdog/dotfiles-public/blob/master/.config/nvim/lua/config/keymaps.lua
+vim.keymap.set("n", "<space>p", '"0p')
+vim.keymap.set("n", "<space>P", '"0P')
+vim.keymap.set("v", "<space>p", '"0p')
+vim.keymap.set("n", "<space>c", '"_c')
+vim.keymap.set("n", "<space>C", '"_C')
+vim.keymap.set("v", "<space>c", '"_c')
+vim.keymap.set("v", "<space>C", '"_C')
+vim.keymap.set("n", "<space>d", '"_d')
+vim.keymap.set("n", "<space>D", '"_D')
+vim.keymap.set("v", "<space>d", '"_d')
+vim.keymap.set("v", "<space>D", '"_D')
+
 

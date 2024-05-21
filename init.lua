@@ -5,13 +5,19 @@ require('_options')
 require('_lsp')
 require('_git')
 require('_lualine')
-require('_bufferline')
 require('_formatter')
-require('_dap')
 require('_telescope')
 require('_treesitter')
+require('_bufferline')
 
-require('Comment').setup()
 require('go').setup()
 require('mason').setup()
+
 require('mini.files').setup()
+require("oil").setup()
+
+require('Comment').setup {
+    pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
+}
+
+vim.opt.termguicolors = true

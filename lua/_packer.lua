@@ -26,7 +26,6 @@ require('packer').startup(function(use)
   --   'f-person/git-blame.nvim',
   -- }
   use 'tribela/vim-transparent'
-  use {'akinsho/bufferline.nvim', tag = "v3.*", requires = 'nvim-tree/nvim-web-devicons'}
   use ({ 'projekt0n/github-nvim-theme', tag = 'v0.0.7' })
   use { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
@@ -106,17 +105,15 @@ require('packer').startup(function(use)
   -- use("github/copilot.vim")
   use("echasnovski/mini.files")
 
-  use 'mfussenegger/nvim-dap'
+  -- use 'mfussenegger/nvim-dap'
 
-  use 'leoluz/nvim-dap-go'
-  use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
-  use 'mxsdev/nvim-dap-vscode-js'
+  -- use 'leoluz/nvim-dap-go'
+  -- use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
+  -- use 'mxsdev/nvim-dap-vscode-js'
 
   -- beautiful colorschemes
   use "rose-pine/neovim"
   use { "catppuccin/nvim", as = "catppuccin" }
-
-  -- require('Comment').setup()
 
   use {
       'numToStr/Comment.nvim',
@@ -124,23 +121,26 @@ require('packer').startup(function(use)
           require('Comment').setup()
       end
   }
-  -- When updating to NeoVim 10.0, use the following
-  -- use({
-  --   'Bekaboo/dropbar.nvim',
-  --   requires = {
-  --     'nvim-telescope/telescope-fzf-native.nvim'
-  --   }
-  -- })
 
-  -- Add custom plugins to packer from /nvim/lua/custom/plugins.lua
---   local has_plugins, plugins = pcall(require, 'custom.plugins')
---   if has_plugins then
---     plugins(use)
---   end
---
---   if is_bootstrap then
---     require('packer').sync()
---   end
+  use { "JoosepAlviste/nvim-ts-context-commentstring" }
+
+  use { "nvim-neotest/nvim-nio" }
+
+  use({
+    "stevearc/oil.nvim",
+    config = function()
+      require("oil").setup()
+    end,
+  })
+
+  use({
+    'Bekaboo/dropbar.nvim',
+    requires = {
+      'nvim-telescope/telescope-fzf-native.nvim'
+    }
+  })
+
+  use {'akinsho/bufferline.nvim', tag = "*", requires = 'nvim-tree/nvim-web-devicons'}
 end)
 
 -- Automatically source and re-compile packer whenever you save this init.lua

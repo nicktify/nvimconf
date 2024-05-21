@@ -7,9 +7,9 @@ require('lualine').setup {
     -- show current opened buffer
   },
   sections = {
-    lualine_c = {
-      { 'filename', path = 1 },
-    },
+    -- lualine_c = {
+    --   { 'filename', path = 1 },
+    -- },
     lualine_x = {
       { 'filetype', colored = true },
     },

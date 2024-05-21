@@ -2,12 +2,12 @@
 -- See `:help vim.o`
 
 -- Set highlight on search
-vim.o.hlsearch = false
+-- vim.o.hlsearch = false
 
 vim.o.cursorline = false
--- vim.o.scrolloff = 3
+vim.o.scrolloff = 10
 vim.o.wrap = false
-vim.wo.number = true
+vim.wo.number = false
 vim.o.clipboard = 'unnamedplus'
 
 -- Enable mouse mode
@@ -45,7 +45,7 @@ vim.o.ignorecase = false
 vim.o.smartcase = false
 
 -- Decrease update time
-vim.o.updatetime = 250
+-- vim.o.updatetime = 250
 vim.wo.signcolumn = 'yes'
 
 -- Set colorscheme
@@ -55,3 +55,21 @@ vim.cmd [[colorscheme catppuccin-mocha]]
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
 
+
+-- Define the auto read function
+local function autoread()
+  if vim.fn.getbufinfo('%')[1].changed == 1 then
+    vim.cmd('echohl WarningMsg | echo "File changed on disk. Buffer not reloaded." | echohl None')
+  else
+    vim.cmd('checktime')
+  end
+end
+
+-- Set up autocommands
+vim.api.nvim_create_autocmd({'FocusGained', 'BufEnter', 'CursorHold', 'CursorHoldI'}, {
+  pattern = '*',
+  callback = autoread
+})
+
+-- Enable autoread globally
+vim.o.autoread = true

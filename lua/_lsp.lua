@@ -50,7 +50,7 @@ end
 -- Setup mason so it can manage external tooling
 -- Enable the following language servers
 -- Feel free to add/remove any LSPs that you want here. They will automatically be installed
-local servers = { 'clangd', 'rust_analyzer', 'tsserver','pyright', 'gopls' }
+local servers = { 'clangd', 'rust_analyzer','pyright', 'gopls', 'tsserver', 'lua_ls' }
 
 
 -- nvim-cmp supports additional completion capabilities
@@ -102,6 +102,13 @@ cmp.setup {
 for _, lsp in ipairs(servers) do
   require('lspconfig')[lsp].setup {
     on_attach = on_attach,
+    settings = {
+      Lua = {
+        diagnostics = {
+          globals = {"vim"}
+        }
+      }
+    },
     capabilities = capabilities,
   }
 end
@@ -115,10 +122,6 @@ end
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
   callback = function(event)
-    -- NOTE: Remember that lua is a real programming language, and as such it is possible
-    -- to define small helper and utility functions so you don't have to repeat yourself
-    -- many times.
-
     -- In this case, we create a function that lets us more easily define mappings specific
     -- for LSP related items. It sets the mode, buffer and description for us each time.
     local map = function(keys, func, desc)
@@ -172,6 +175,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
     --
     -- When you move your cursor, the highlights will be cleared (the second autocommand).
     local client = vim.lsp.get_client_by_id(event.data.client_id)
+
+    -- disable ugly syntax highlighting from lsp servers, and only use treesitter
+    client.server_capabilities.semanticTokensProvider = nil
     if client and client.server_capabilities.documentHighlightProvider then
       vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
         buffer = event.buf,
