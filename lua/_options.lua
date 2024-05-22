@@ -2,12 +2,12 @@
 -- See `:help vim.o`
 
 -- Set highlight on search
--- vim.o.hlsearch = false
+vim.o.hlsearch = true
 
-vim.o.cursorline = false
+vim.o.cursorline = true
 vim.o.scrolloff = 10
 vim.o.wrap = false
-vim.wo.number = false
+vim.wo.number = true
 vim.o.clipboard = 'unnamedplus'
 
 -- Enable mouse mode
@@ -71,5 +71,5 @@ vim.api.nvim_create_autocmd({'FocusGained', 'BufEnter', 'CursorHold', 'CursorHol
   callback = autoread
 })
 
--- Enable autoread globally
+-- Enable autoread globally, this would reload changes on buffers when the change is done outside nvim.
 vim.o.autoread = true
