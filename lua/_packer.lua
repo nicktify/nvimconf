@@ -149,7 +149,6 @@ require('packer').startup(function(use)
           "nvim-lua/plenary.nvim",
       },
   })
-  -- test
 
 end)
 
