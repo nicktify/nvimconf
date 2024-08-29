@@ -4,7 +4,7 @@
 -- Set highlight on search
 vim.o.hlsearch = true
 
-vim.o.cursorline = true
+vim.o.cursorline = false
 vim.o.scrolloff = 10
 vim.o.wrap = false
 vim.wo.number = true
@@ -50,7 +50,7 @@ vim.wo.signcolumn = 'yes'
 
 -- Set colorscheme
 vim.o.termguicolors = true
-vim.cmd [[colorscheme catppuccin-mocha]]
+vim.cmd [[colorscheme rose-pine]]
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'

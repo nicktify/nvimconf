@@ -150,6 +150,15 @@ require('packer').startup(function(use)
       },
   })
 
+  use 'reisub0/hot-reload.vim'
+
+  use {
+    "supermaven-inc/supermaven-nvim",
+    config = function()
+      require("supermaven-nvim").setup({})
+    end,
+  }
+
 end)
 
 -- Automatically source and re-compile packer whenever you save this init.lua
