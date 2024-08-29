@@ -22,6 +22,7 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 
 -- Go to definition open on new tab
 vim.keymap.set("n", "gn", "<cmd>tab split | lua vim.lsp.buf.definition()<CR>", {})
+vim.keymap.set("n", "gs", "<cmd>vs | lua vim.lsp.buf.definition()<CR>", {})
 
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
 
@@ -30,8 +31,8 @@ vim.keymap.set('n', '<leader><space>', function()
     -- winblend = 10,
     -- previewer = false,
     layout_config = {
-      height = 0.9,
-      width = 0.5,
+      height = 0.4,
+      width = 0.6,
     },
   })
 end, { desc = '[ ] Find existing buffers' })
@@ -51,58 +52,26 @@ end, { desc = '[/] Fuzzily search in current buffer]' })
 -- vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch [G]rep' })
 vim.keymap.set('n', '<leader>sg', function()
   require('telescope.builtin').live_grep(require('telescope.themes').get_dropdown {
-    -- winblend = 10,
-    -- previewer = false,
-    -- prompt_prefix = '🔍 ',
-    -- prompt_titl = 'Live Grep:',
     layout_config = {
-      height = 0.9,
-      width = 0.9,
+      height = 0.4,
+      width = 0.6,
     },
   })
-end, { desc = '[F]ind [G]rep' })
+end, { desc = '[/] Fuzzily search in current buffer]' })
 
 -- resume function
 vim.keymap.set('n', '<leader>re', require('telescope.builtin').resume, { desc = '[S]earch [G]rep' })
 
-vim.keymap.set('n', '<leader>fb', function()
-  require('telescope').extensions.file_browser.file_browser(require('telescope.themes').get_dropdown {
-      -- winblend = 10,
-      -- transparent = true,
-      previewer = true,
-      layout_config = {
-        height = 0.9,
-        width = 0.9,
-      },
-      -- no_ignore = true,
-      -- hidden = true,
-      -- open current dir
-      cwd = vim.fn.expand('%:p:h'),
-      -- show folders firts
-      grouped = true,
-      files = true,
-      add_dirs = true,
-      -- depth = 2,
-      hide_parent_dir = true,
-      dir_icon = '',
-      dir_icon_hl = 'Directory',
-      prompt_path = true,
-    }
-  )
-end, { desc = '[F]ile [B]rowser', noremap = true })
-
--- Open mini files
 vim.keymap.set('n', 'ff', function()
   require('mini.files').open()
 end, { desc = '[F]ind [F]iles' })
-
 
 vim.keymap.set('n', '<leader>sf', function()
   require('telescope.builtin').find_files(require('telescope.themes').get_dropdown {
     previewer = false,
     layout_config = {
-      height = 0.9,
-      width = 0.9,
+      height = 0.4,
+      width = 0.6,
     },
     no_ignore = true,
     hidden = true,
@@ -130,7 +99,7 @@ vim.keymap.set('n', '<leader>sw', function()
     previewer = true,
     layout_config = {
       height = 0.4,
-      width = 0.9,
+      width = 0.6,
     },
     find_command = {
       "rg",
@@ -187,3 +156,4 @@ vim.keymap.set("v", "<space>d", '"_d')
 vim.keymap.set("v", "<space>D", '"_D')
 
 
+vim.keymap.set('n', '<leader>lg', ':LazyGit<CR>', { noremap = true, silent = true })

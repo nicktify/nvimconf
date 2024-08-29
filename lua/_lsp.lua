@@ -50,7 +50,7 @@ end
 -- Setup mason so it can manage external tooling
 -- Enable the following language servers
 -- Feel free to add/remove any LSPs that you want here. They will automatically be installed
-local servers = { 'clangd', 'rust_analyzer','pyright', 'gopls', 'tsserver', 'lua_ls' }
+local servers = { 'clangd', 'rust_analyzer','pyright', 'gopls', 'tsserver', 'lua_ls', 'dartls', 'volar' }
 
 
 -- nvim-cmp supports additional completion capabilities
