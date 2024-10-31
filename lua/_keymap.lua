@@ -24,7 +24,17 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 vim.keymap.set("n", "gn", "<cmd>tab split | lua vim.lsp.buf.definition()<CR>", {})
 vim.keymap.set("n", "gs", "<cmd>vs | lua vim.lsp.buf.definition()<CR>", {})
 
-vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
+-- vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
+vim.keymap.set('n', '<leader>?', function()
+  require('telescope.builtin').oldfiles(require('telescope.themes').get_dropdown {
+    -- winblend = 10,
+    -- previewer = false,
+    layout_config = {
+      height = 0.4,
+      width = 0.6,
+    },
+  })
+end, { desc = '[ ] Find existing buffers' })
 
 vim.keymap.set('n', '<leader><space>', function()
   require('telescope.builtin').buffers(require('telescope.themes').get_dropdown {
