@@ -152,12 +152,13 @@ require('packer').startup(function(use)
 
   use 'reisub0/hot-reload.vim'
 
-  use {
-    "supermaven-inc/supermaven-nvim",
-    config = function()
-      require("supermaven-nvim").setup({})
-    end,
-  }
+  -- like github copilot
+  -- use {
+  --   "supermaven-inc/supermaven-nvim",
+  --   config = function()
+  --     require("supermaven-nvim").setup({})
+  --   end,
+  -- }
 
 end)
 
