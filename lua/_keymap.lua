@@ -1,19 +1,7 @@
--- [[ Basic Keymaps ]]
--- Set <space> as the leader key
--- See `:help mapleader`
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
--- Formatting python file with autopep8
-vim.api.nvim_set_keymap('n', '<leader>fp', [[:%!autopep8 -<CR>]], { noremap = true, silent = true })
-
--- copilot
--- vim.g.copilot_no_tab_map = true
--- vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
-
--- Keymaps for better default experience
--- See `:help vim.keymap.set()`
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
 -- Remap for dealing with word wrap
@@ -143,14 +131,7 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
 vim.api.nvim_set_keymap('n', 'K', '5k', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', 'J', '5j', { noremap = true, silent = true })
 
-
 vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
-
--- move yank text into black hole when deliting (don't copy to clipboard)
--- vim.keymap.set("n", "d", '"_d')
--- vim.keymap.set("n", "x", "d")
--- vim.keymap.set("v", "d", '"_d')
--- vim.keymap.set("v", "x", "d")
 
 -- copy from  https://github.com/craftzdog/dotfiles-public/blob/master/.config/nvim/lua/config/keymaps.lua
 vim.keymap.set("n", "<space>p", '"0p')
@@ -164,6 +145,5 @@ vim.keymap.set("n", "<space>d", '"_d')
 vim.keymap.set("n", "<space>D", '"_D')
 vim.keymap.set("v", "<space>d", '"_d')
 vim.keymap.set("v", "<space>D", '"_D')
-
 
 vim.keymap.set('n', '<leader>lg', ':LazyGit<CR>', { noremap = true, silent = true })
